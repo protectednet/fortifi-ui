@@ -261,8 +261,8 @@ final class Ui
     static::$assetManager = $am;
 
     //Require Base UI
-    $am->requireCss('assets/css/ui-base.css');
-    $am->requireJs('assets/js/ui-base.js');
+    $am->requireCss('assets/css/ui-base.min.css');
+    $am->requireJs('assets/js/ui-base.min.js');
 
     if($jquery)
     {
