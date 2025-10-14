@@ -1,13 +1,15 @@
 <?php
 namespace Fortifi\Ui;
 
+use Illuminate\Contracts\Support\Renderable;
 use Packaged\Dispatch\ResourceManager;
+use Packaged\Glimpse\Core\ISafeHtmlProducer;
 use Packaged\SafeHtml\SafeHtml;
 
 /**
  * Extension of cubex UiElement with Dispatch helpers and includes
  */
-abstract class UiElement extends \Cubex\Ui\UiElement
+abstract class UiElement implements ISafeHtmlProducer, Renderable
 {
   protected $_processedIncludes = false;
 
