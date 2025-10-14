@@ -8,6 +8,7 @@ use Packaged\Glimpse\Core\HtmlTag;
 use Packaged\Glimpse\Tags\Div;
 use Packaged\Glimpse\Tags\Lists\ListItem;
 use Packaged\Glimpse\Tags\Lists\UnorderedList;
+use Packaged\Glimpse\Tags\Text\HeadingTwo;
 use Packaged\SafeHtml\ISafeHtmlProducer;
 use Packaged\SafeHtml\SafeHtml;
 
@@ -93,7 +94,11 @@ class PageNavigation extends UiElement
     /** @var Div $header */
     if(!empty($this->getTitle()))
     {
-      $menu->prependContent(Div::create($this->getTitle())->addClass('f-page-navigation-title panel-heading clearfix'));
+      $menu->prependContent(
+        Div::create(HeadingTwo::create($this->getTitle())->addClass('heading-text pull-left f-mn'))->addClass(
+          'f-page-navigation-title panel-heading clearfix'
+        )
+      );
     }
     return $menu;
   }
