@@ -10,7 +10,7 @@ class IntegrationLink extends PageletLink
   public function __construct($uri, $content = null, $selector = '#integrate-section', $baseUrl = null)
   {
     $this->setBaseUrl($baseUrl);
-    parent::__construct(Path::buildUnix($baseUrl, $uri), $content, $selector);
+    parent::__construct(Path::unix($baseUrl, $uri), $content, $selector);
   }
 
   /**
@@ -23,7 +23,7 @@ class IntegrationLink extends PageletLink
 
   public static function create($uri = null, $content = null, $baseUrl = null, $selector = '#integrate-section')
   {
-    $parent = new static(Path::buildUnix($baseUrl, $uri), $content, $selector);
+    $parent = new static(Path::unix($baseUrl, $uri), $content, $selector);
     $parent->_baseUrl = $baseUrl;
     $parent->setAjaxUri($uri);
     return $parent;
@@ -31,7 +31,7 @@ class IntegrationLink extends PageletLink
 
   public function setAjaxUri($uri)
   {
-    $url = Path::buildUnix($this->_baseUrl, 'pagelet', $uri);
+    $url = Path::unix($this->_baseUrl, 'pagelet', $uri);
     return parent::setAjaxUri($url);
   }
 }
