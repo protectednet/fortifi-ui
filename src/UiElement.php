@@ -3,7 +3,7 @@ namespace Fortifi\Ui;
 
 use Illuminate\Contracts\Support\Renderable;
 use Packaged\Dispatch\ResourceManager;
-use Packaged\Glimpse\Core\ISafeHtmlProducer;
+use Packaged\SafeHtml\ISafeHtmlProducer;
 use Packaged\SafeHtml\SafeHtml;
 
 /**
