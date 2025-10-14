@@ -1,67 +1,65 @@
 <?php
 namespace Fortifi\UiExample\Controllers;
 
-use Cubex\Http\Response;
-use Cubex\View\LayoutController;
+use Cubex\Controller\Controller;
 use Fortifi\Ui\ContentElements\QueryBuilder\QueryBuilderDataType as QBDT;
 use Fortifi\Ui\ContentElements\QueryBuilder\QueryBuilderDefinition as QBD;
 use Fortifi\Ui\ContentElements\QueryBuilder\QueryBuilderDefinitions;
-use Fortifi\Ui\ProjectSupport\FortifiUiLayout;
-use Fortifi\UiExample\Views\AlertsView;
-use Fortifi\UiExample\Views\AvatarView;
-use Fortifi\UiExample\Views\CardsView;
-use Fortifi\UiExample\Views\ColoursView;
-use Fortifi\UiExample\Views\FlipperView;
-use Fortifi\UiExample\Views\IconsView;
-use Fortifi\UiExample\Views\ObjectListsView;
-use Fortifi\UiExample\Views\PageElementsView;
-use Fortifi\UiExample\Views\PageNavigationView;
-use Fortifi\UiExample\Views\PanelsView;
-use Fortifi\UiExample\Views\QueryBuilderView;
-use Fortifi\UiExample\Views\TextView;
+use Fortifi\UiExample\Layouts\ExampleLayout;
+use Packaged\Glimpse\Tags\Div;
 use Packaged\Helpers\Arrays;
+use Packaged\Http\Responses\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
-class ExampleController extends LayoutController
+class ExampleController extends Controller
 {
-  protected function _init()
+  protected $_views = [];
+
+  public function getRoutes()
   {
-    $this->setLayout(new FortifiUiLayout($this));
+    yield self::route('querybuilder/definition', 'qbDefinition');
+    yield self::route('querybuilder/policy', 'qbPolicyData');
+    yield self::route('querybuilder/browsers', 'qbBrowsers');
+    yield self::route('querybuilder/sids', 'qbSids');
+
+    yield self::route('dropdowns/content', 'dropContent');
+
+    yield self::route('{page}', 'default');
+    yield self::route('', 'default');
   }
 
-  public function defaultAction($page = null)
+  public function getDefault()
   {
-    switch($page)
+    $views = glob(dirname(__DIR__) . '/Views/*View.php');
+    foreach($views as $view)
     {
-      case 'alerts':
-        return new AlertsView();
-      case 'panels':
-        return new PanelsView();
-      case 'colours':
-        return new ColoursView();
-      case 'navigation':
-        return new PageNavigationView();
-      case 'text':
-        return new TextView();
-      case 'objectlist':
-        return new ObjectListsView();
-      case 'querybuilder':
-        return new QueryBuilderView();
-      case 'flipper':
-        return new FlipperView();
-      case 'icons':
-        return new IconsView();
-      case 'cards':
-        return new CardsView();
-      case 'avatars':
-        return new AvatarView();
-      case 'page':
-        return new PageElementsView();
-      default:
-        return 'Coming Soon';
+      $view = basename($view);
+      if($view == 'AbstractUiExampleView.php')
+      {
+        continue;
+      }
+      $key = strtolower(substr($view, 0, -8));
+      $objClass = '\\Fortifi\\UiExample\\Views\\' . substr($view, 0, -4);
+      $obj = $objClass::i();
+      $this->_views[$key] = $obj;
     }
+
+    $layout = new ExampleLayout();
+    $layout->views = $this->_views;
+    $page = $this->getContext()->routeData()->get('page');
+    if(isset($this->_views[$page]))
+    {
+      $layout->content = $this->_views[$page]->render();
+    }
+    return $layout;
   }
 
-  public function qbDefinition()
+  public function getDropContent()
+  {
+    return Div::create('this is a dropdown loaded by ajax');
+  }
+
+  public function getQbDefinition()
   {
     $definitions = new QueryBuilderDefinitions();
 
@@ -97,9 +95,11 @@ class ExampleController extends LayoutController
     );
     $definitions->addDefinition($between);
 
-    $between = new QBD('between_date', 'Between Test (Date)', QBDT::DATE);
+    $between = new QBD('timestamp_day', 'Timestamp (Day)', QBDT::TIMESTAMP_DAY);
     $between->setComparators(
       [
+        QBD::COMPARATOR_GREATER_OR_EQUAL,
+        QBD::COMPARATOR_LESS_OR_EQUAL,
         QBD::COMPARATOR_BETWEEN,
         QBD::COMPARATOR_NOT_BETWEEN,
       ]
@@ -112,7 +112,7 @@ class ExampleController extends LayoutController
       'Sub ID',
       QBDT::STRING
     );
-    $sidDefinition->setValues($this->qbSids());
+    $sidDefinition->setValues($this->getQbSids());
     $sidDefinition->setStrict(false);
     $sidDefinition->setComparators(
       [
@@ -167,29 +167,33 @@ class ExampleController extends LayoutController
     return new Response(json_encode($definitions->forOutput()));
   }
 
-  public function qbPolicyData()
+  public function getQbPolicyData()
   {
     $policy = [
       [
         'key'        => 'browser',
-        'comparator' => 'in',
+        'comparator' => QBD::COMPARATOR_IN,
         'value'      => ['chrome', 'firefox', 'kdsfgkjsdgohwego'],
       ],
       [
         'key'        => 'browser',
-        'comparator' => 'eq',
+        'comparator' => QBD::COMPARATOR_EQUALS,
         'value'      => '"><script>alert(\'break\')</script>',
       ],
-      ['key' => 'expiryDate', 'comparator' => 'eq', 'value' => date('Y-m-d')],
+      [
+        'key'        => 'expiryDate',
+        'comparator' => QBD::COMPARATOR_BETWEEN,
+        'value'      => date('Y-m-d', time() - 86401) . ',' . date('Y-m-d'),
+      ],
       'sid' => ['12'],
-      ['key' => 'aaa', 'comparator' => 'eq', 'value' => 'test3'],
+      ['key' => 'aaa', 'comparator' => QBD::COMPARATOR_EQUALS, 'value' => 'test3'],
     ];
-    return $policy;
+    return JsonResponse::create($policy);
   }
 
-  public function qbBrowsers()
+  public function getQbBrowsers()
   {
-    $query = $this->_getRequest()->query->get('search');
+    $query = $this->getRequest()->query->get('search');
     $values = [
       ['value' => '', 'text' => 'No Browser'],
       ['value' => 'chrome', 'text' => 'Chrome'],
@@ -211,7 +215,7 @@ class ExampleController extends LayoutController
     );
   }
 
-  public function qbSids()
+  public function getQbSids()
   {
     $values = [
       ['value' => 'malware15IT', 'text' => 'malware15IT'],
@@ -223,7 +227,7 @@ class ExampleController extends LayoutController
       ['value' => 'spyware16', 'text' => 'spyware16'],
     ];
 
-    $query = $this->_getRequest()->query->get('search');
+    $query = $this->getRequest()->query->get('search');
     if($query)
     {
       return array_filter(
@@ -238,16 +242,5 @@ class ExampleController extends LayoutController
     {
       return Arrays::ipull($values, 'text');
     }
-  }
-
-  public function getRoutes()
-  {
-    return [
-      'querybuilder/definition' => 'qbDefinition',
-      'querybuilder/policy'     => 'qbPolicyData',
-      'querybuilder/browsers'   => 'qbBrowsers',
-      'querybuilder/sids'       => 'qbSids',
-      ':page'                   => 'defaultAction',
-    ];
   }
 }

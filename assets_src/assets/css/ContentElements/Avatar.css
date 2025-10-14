@@ -3,7 +3,7 @@
   height: 48px !important;
   box-sizing: content-box;
   overflow: hidden;
-  border: 1px solid;
+  border: 0px solid;
   border-radius: 50%;
   display: inline-block;
   background-position: center;
@@ -22,15 +22,18 @@
 
 .text-avatar {
   font-size: 20px;
-  letter-spacing: 2px;
-  padding-left: 2px;
+  letter-spacing: 0;
 }
 
 .favatar.x2 {
   width: 64px !important;
   height: 64px !important;
   line-height: 64px;
-  font-size: 45px;
+  font-size: 35px;
+}
+
+.favatar.x1 {
+  font-size: 22px;
 }
 
 .favatar.x2.text-avatar {
@@ -41,81 +44,88 @@
   width: 22px !important;
   height: 22px !important;
   line-height: 21px;
-  font-size: 15px;
+  font-size: 12px;
 }
 
 .favatar.x0.text-avatar {
+  font-size: 12px;
+}
+
+.favatar.x05 {
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 30px;
   font-size: 15px;
 }
 
 .favatar.default {
   border-color: rgb(199, 204, 217);
-  color: rgb(132, 134, 144);
-  background-color: rgba(199, 204, 217, 0.4);
+  color: rgb(132, 134, 144) !important;
+  background-color: rgba(199, 204, 217, 0.2);
 }
 
 .favatar.red {
   border-color: rgb(192, 57, 43);
-  color: rgb(192, 57, 43);
-  background-color: rgba(192, 57, 43, 0.4);
+  color: rgb(192, 57, 43) !important;
+  background-color: rgba(192, 57, 43, 0.2);
 }
 
 .favatar.orange {
   border-color: rgb(230, 126, 34);
-  color: rgb(230, 63, 27);
-  background-color: rgba(230, 126, 34, 0.4);
+  color: rgb(230, 63, 27) !important;
+  background-color: rgba(230, 126, 34, 0.2);
 }
 
 .favatar.yellow {
   border-color: rgb(241, 196, 15);
-  color: rgb(241, 131, 11);
-  background-color: rgba(241, 196, 15, 0.4);
+  color: rgb(241, 131, 11) !important;
+  background-color: rgba(241, 196, 15, 0.2);
 }
 
 .favatar.green {
   border-color: rgb(19, 149, 67);
-  color: rgb(19, 149, 67);
-  background-color: rgba(19, 149, 67, 0.4);
+  color: rgb(19, 149, 67) !important;
+  background-color: rgba(19, 149, 67, 0.2);
 }
 
 .favatar.sky {
   border-color: rgb(52, 152, 219);
-  color: rgb(52, 152, 219);
-  background-color: rgba(52, 152, 219, 0.4);
+  color: rgb(52, 152, 219) !important;
+  background-color: rgba(52, 152, 219, 0.2);
 }
 
 .favatar.blue {
   border-color: rgb(41, 128, 185);
-  color: rgb(41, 128, 185);
-  background-color: rgba(41, 128, 185, 0.4);
+  color: rgb(41, 128, 185) !important;
+  background-color: rgba(41, 128, 185, 0.2);
 }
 
 .favatar.indigo {
   border-color: rgb(110, 92, 182);
-  color: rgb(110, 92, 182);
-  background-color: rgba(110, 92, 182, 0.4);
+  color: rgb(110, 92, 182) !important;
+  background-color: rgba(110, 92, 182, 0.2);
 }
 
 .favatar.violet {
   border-color: rgb(142, 68, 173);
-  color: rgb(142, 68, 173);
-  background-color: rgba(142, 68, 173, 0.4);
+  color: rgb(142, 68, 173) !important;
+  background-color: rgba(142, 68, 173, 0.2);
 }
 
 .favatar.pink {
   border-color: rgb(218, 73, 190);
   color: rgb(159, 55, 136);
-  background-color: rgba(218, 73, 190, 0.4);
+  background-color: rgba(218, 73, 190, 0.2);
 }
 
 .favatar.grey {
   border-color: rgb(189, 195, 199);
-  color: rgb(109, 113, 116);
-  background-color: rgba(189, 195, 199, 0.4);
+  color: rgb(109, 113, 116) !important;
+  background-color: rgba(189, 195, 199, 0.2);
 }
 
 .favatar.black {
   border-color: rgb(51, 51, 51);
-  color: rgb(6, 6, 6);
-  background-color: rgba(51, 51, 51, 0.4);
+  color: rgb(6, 6, 6) !important;
+  background-color: rgba(51, 51, 51, 0.2);
 }

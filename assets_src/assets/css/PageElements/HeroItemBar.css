@@ -11,6 +11,7 @@
 .f-hero-item-bar > div {
   margin: 0 16px;
   flex-grow: 1;
+  height: 64px;
 }
 
 .f-hero-item-bar > div:first-of-type {
@@ -25,7 +26,6 @@
 .f-hero-item-bar > div p {
   margin: 0;
   font-weight: normal;
-
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

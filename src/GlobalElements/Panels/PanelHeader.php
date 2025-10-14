@@ -9,6 +9,7 @@ use Packaged\Glimpse\Tags\Div;
 use Packaged\Glimpse\Tags\Link;
 use Packaged\Glimpse\Tags\Span;
 use Packaged\Glimpse\Tags\Text\HeadingTwo;
+use Packaged\SafeHtml\ISafeHtmlProducer;
 
 class PanelHeader extends UiElement
 {
@@ -30,7 +31,7 @@ class PanelHeader extends UiElement
 
   public static function create($title = null)
   {
-    $heading = new static;
+    $heading = new static();
     $heading->_title = $title;
     return $heading;
   }
@@ -45,12 +46,23 @@ class PanelHeader extends UiElement
    * Add singular action to PanelHeading
    *
    * @param HtmlTag $action
+   * @param string  $withClass if HTML Tag
    *
    * @return $this
    */
-  public function addAction(HtmlTag $action)
+  public function addAction(HtmlTag $action, $withClass = Ui::MARGIN_MEDIUM_LEFT)
   {
-    $this->_actions[] = $action->addClass(Ui::MARGIN_MEDIUM_LEFT);
+    if($withClass)
+    {
+      $action->addClass($withClass);
+    }
+    $this->addCustomAction($action);
+    return $this;
+  }
+
+  public function addCustomAction(ISafeHtmlProducer $action)
+  {
+    $this->_actions[] = $action;
     return $this;
   }
 
@@ -66,13 +78,13 @@ class PanelHeader extends UiElement
   {
     foreach($actions as $action)
     {
-      if($action instanceof HtmlTag)
+      if($action instanceof ISafeHtmlProducer)
       {
         $this->addAction($action);
       }
       else
       {
-        throw new \Exception('addActions() array must contain Link() objects');
+        throw new \Exception('setActions() array must contain ISafeHtmlProducer objects');
       }
     }
     return $this;
@@ -92,8 +104,7 @@ class PanelHeader extends UiElement
   public function addIcon($icon = FontIcon::EDIT)
   {
     $this->_icon = FontIcon::create($icon)
-      ->addClass('panel-heading-icon')
-      ->addClass(Ui::FLOAT_LEFT)
+      ->addClass('f-panel-heading-icon')
       ->addClass(Ui::MARGIN_SMALL_TOP);
     return $this;
   }
@@ -127,8 +138,7 @@ class PanelHeader extends UiElement
     $status = $url ? new Link($url, $text) : Span::create($text);
 
     $status->addClass(
-      'heading-status',
-      Ui::FLOAT_RIGHT,
+      'f-panel-heading-status',
       Ui::MARGIN_MEDIUM_LEFT,
       'label ' . $style . ' ' . Ui::LABEL_AS_BADGE
     );
@@ -139,13 +149,13 @@ class PanelHeader extends UiElement
   protected function _renderTitle()
   {
     return HeadingTwo::create($this->getTitle())
-      ->addClass('heading-text', Ui::FLOAT_LEFT, Ui::MARGIN_NONE);
+      ->addClass('f-panel-heading-text', Ui::MARGIN_NONE);
   }
 
   protected function _renderActions()
   {
     return Div::create($this->getActions())
-      ->addClass('heading-action', Ui::FLOAT_RIGHT, Ui::MARGIN_MEDIUM_LEFT);
+      ->addClass('f-panel-heading-action', Ui::MARGIN_MEDIUM_LEFT);
   }
 
   public function getTitle()
@@ -185,11 +195,10 @@ class PanelHeader extends UiElement
         $this->getIcon(),
         $this->_renderTitle(),
         $this->_renderActions(),
-        $this->getStatus()
+        $this->getStatus(),
       ]
     )->addClass(
       'f-panel-heading',
-      'panel-heading',
       $this->getBgColour(),
       Ui::CLEARFIX
     );

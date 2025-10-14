@@ -3,7 +3,7 @@
   align-self: flex-end;
   flex-grow: 1;
   width: 100%;
-  overflow: visible;
+  overflow: hidden;
   position: relative;
   background-repeat: no-repeat;
   background-position: center center;
@@ -25,7 +25,7 @@
   background: url('../../img/PageElements/Hero/polygon.svg');
   background-position: center center;
   background-size: cover;
-  background-color: #006cdc;
+  background-color: #1478ce;
   position: absolute;
   top: 0;
   left: 0;

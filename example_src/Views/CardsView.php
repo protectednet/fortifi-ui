@@ -5,6 +5,8 @@ use Carbon\Carbon;
 use Fortifi\FontAwesome\FaIcon;
 use Fortifi\Ui\ContentElements\Avatar\Avatar;
 use Fortifi\Ui\ContentElements\Avatar\TextAvatar;
+use Fortifi\Ui\ContentElements\Chips\Chip;
+use Fortifi\Ui\ContentElements\Chips\Chips;
 use Fortifi\Ui\ContentElements\Links\PageletLink;
 use Fortifi\Ui\Enums\Cards\CardActionType;
 use Fortifi\Ui\Enums\Colour;
@@ -13,6 +15,7 @@ use Fortifi\Ui\GlobalElements\Cards\Cards;
 use Fortifi\Ui\GlobalElements\Cards\ContentCard;
 use Fortifi\Ui\GlobalElements\Icons\FontIcon;
 use Fortifi\Ui\Ui;
+use Packaged\Glimpse\Tags\LineBreak;
 use Packaged\Glimpse\Tags\Span;
 use Packaged\Helpers\Arrays;
 
@@ -31,7 +34,6 @@ class CardsView extends AbstractUiExampleView
    * @param Card $card
    *
    * @return Card
-   * @throws \Exception
    */
   protected function _addCardProperties(Card $card)
   {
@@ -74,9 +76,9 @@ class CardsView extends AbstractUiExampleView
    */
   protected function _getInsecureIcon()
   {
-    return FaIcon::layers(
-      FaIcon::create(FaIcon::LOCK),
-      FaIcon::create(FaIcon::CIRCLE_NOTCH)->grow(16)->addClass(Ui::TEXT_ORANGE)
+    return FaIcon::stack(
+      FaIcon::create(FaIcon::CIRCLE_NOTCH)->grow(16)->addClass(Ui::TEXT_ORANGE),
+      FaIcon::create(FaIcon::LOCK)
     )->addClass(Ui::MARGIN_MEDIUM_LEFT);
   }
 
@@ -85,9 +87,9 @@ class CardsView extends AbstractUiExampleView
    */
   protected function _getArchivedUserIcon()
   {
-    return FaIcon::layers(
-      FaIcon::create(FaIcon::USER),
-      FaIcon::create(FaIcon::BAN)->grow(16)->addClass(Ui::TEXT_RED)
+    return FaIcon::stack(
+      FaIcon::create(FaIcon::BAN)->grow(16)->addClass(Ui::TEXT_RED),
+      FaIcon::create(FaIcon::USER)
     )->addClass(Ui::MARGIN_MEDIUM_LEFT);
   }
 
@@ -164,7 +166,6 @@ class CardsView extends AbstractUiExampleView
    * @param int  $qty
    *
    * @return Card
-   * @throws \Exception
    */
   protected function _addRandomActions(Card $card, $qty = 3)
   {
@@ -190,7 +191,6 @@ class CardsView extends AbstractUiExampleView
 
   /**
    * @return Card
-   * @throws \Exception
    */
   protected function _getCard()
   {
@@ -254,7 +254,6 @@ class CardsView extends AbstractUiExampleView
 
   /**
    * @return Card[]
-   * @throws \Exception
    */
   protected function _getCards()
   {
@@ -268,7 +267,6 @@ class CardsView extends AbstractUiExampleView
 
   /**
    * @return Card
-   * @throws \Exception
    */
   protected function _createEmployeeCard()
   {
@@ -276,13 +274,14 @@ class CardsView extends AbstractUiExampleView
     $card->setAvatar($this->_getAvatar());
     $card->addIcon($this->_getInsecureIcon());
     $card->addIcon($this->_getArchivedUserIcon());
+    $card->setDescription("Job Role Description");
 
     $card->addProperty('role', $this->_getRandomJobTitle());
     $card->addProperty('email address', $this->_getRandomEmail(), true);
     $card->addProperty('email address', $this->_getRandomEmail(), true);
     $card->addProperty('email address', $this->_getRandomEmail(), true);
 
-    $this->_addRandomActions($card);
+    $this->_addRandomActions($card, 5);
 
     return $card;
   }
@@ -298,7 +297,6 @@ class CardsView extends AbstractUiExampleView
   /**
    * @group Cards
    * @return Cards
-   * @throws \Exception
    */
   final public function noPropertiesCards()
   {
@@ -319,7 +317,6 @@ class CardsView extends AbstractUiExampleView
   /**
    * @group Cards
    * @return Cards
-   * @throws \Exception
    */
   final public function employeeRolesCards()
   {
@@ -327,6 +324,7 @@ class CardsView extends AbstractUiExampleView
     while(count($items) < 5)
     {
       $card = $this->_createQuickCard($this->_getRandomJobTitle());
+      $card->setDescription("Lorem Ipsum is simply dummy text of the printing and typesetting industry.");
       $card->addProperty('email address', $this->_getRandomEmail(), true);
       $this->_addRandomActions($card, 1);
 
@@ -340,7 +338,6 @@ class CardsView extends AbstractUiExampleView
 
   /**
    * @group Cards
-   * @throws \Exception
    */
   final public function departmentQueueCards()
   {
@@ -367,7 +364,6 @@ class CardsView extends AbstractUiExampleView
 
   /**
    * @group Cards
-   * @throws \Exception
    */
   final public function eventManagementCards()
   {
@@ -382,6 +378,7 @@ class CardsView extends AbstractUiExampleView
       );
       $card->setColour(Card::COLOUR_RED);
       $card->setColourBackground(true);
+      $card->setDescription("Lorem Ipsum is simply dummy text of the printing and typesetting industry.");
       $card->addProperty('type', $type[(mt_rand(0, count($type) - 1))]);
       $card->addProperty('type', $type[(mt_rand(0, count($type) - 1))]);
       $card->addProperty('type', $type[(mt_rand(0, count($type) - 1))]);
@@ -398,7 +395,6 @@ class CardsView extends AbstractUiExampleView
 
   /**
    * @group Cards
-   * @throws \Exception
    */
   final public function employeeCards()
   {
@@ -416,7 +412,6 @@ class CardsView extends AbstractUiExampleView
 
   /**
    * @group Cards
-   * @throws \Exception
    */
   final public function paymentMethodCards()
   {
@@ -443,7 +438,6 @@ class CardsView extends AbstractUiExampleView
 
   /**
    * @group Cards
-   * @throws \Exception
    */
   final public function contentCards()
   {
@@ -459,23 +453,154 @@ Pellentesque elementum velit sed nulla rutrum, eget porttitor orci efficitur. Do
     $card = Card::i();
     $card->setAvatar($this->_getAvatar());
     $card->setLabel("Label Here");
-    $card->setTitle("This is a title");
+    $card->setTitle("This is a standard card");
     $cards->addCard($card);
     $card->setDescription($longDesc);
     $card->addProperty("ABC", "DESHDKHF ");
     $card->addProperty("ABC", "DESHDKHF ");
     $card->addIcon($this->_getArchivedUserIcon());
     $this->_addRandomActions($card);
+
     $card = ContentCard::i();
     $cards->addCard($card);
     $card->setAvatar($this->_getAvatar());
     $card->addIcon($this->_getInsecureIcon());
     $card->setLabel("Label Here");
-    $card->setTitle("This is a title");
+    $card->setTitle("This is a content card");
     $card->setDescription($longDesc);
     $card->addProperty("ABC", "DESHDKHFF ");
     $card->addProperty("ABC", "DESHDKHFF ");
     $this->_addRandomActions($card);
+
+    $card = ContentCard::i();
+    $cards->addCard($card);
+    $card->setTitle('Non spaced content');
+    $card->setAvatar(TextAvatar::create("Brooke Bryan")->setColour(TextAvatar::COLOUR_GREEN)->sizeMedium());
+    $card->addIcon($this->_getInsecureIcon());
+    $card->setLabel("Label Here");
+    $card->setDescription(
+      '{"event":"purchase.created","sig":"dfjklkyrdcvb,kyrsxcvbnmkurdv","uuid":"whp-b3ea015b717ekjgfkjgf3.86828014","rqid":"1-whr-b3ea015b717wefwegwegwf61.55725332","timestamp":1534161569,"data":{"offerFid":"","uniqueReference":"AE8M-WEKH-GHXN-SAIF-WEKH-1813","amount":119.95,"setupAmount":0,"totalAmount":143.94,"taxAmount":23.99,"nextRenewalAmount":143.94,"discount":0,"setupDiscount":0,"cycleTerm":1,"cycleExact":"","cycleType":4,"quantity":1,"createdTime":1534161569,"nextRenewDate":1565654400,"customerFid":"FID:CST:31651321656:VtefwlrICjB","productFid":"FID:PROD:32165161981:B5A9w26sOHu7","priceFid":"FID:PROD:PRCE:34634634634:FajsIRm","currency":"GBP","totalAmountUsd":183.54702947772,"exchangeRate":1.2751634672622,"fid":"FID:PCHS:SUBS:63126151912151:8LSppuj","id":1487831,"displayName":"Pro Plus","description":"3PROD2"}}'
+    );
+
+    return $cards;
+  }
+
+  /**
+   * @group Cards
+   */
+  final public function standaloneCards()
+  {
+    $longDesc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque suscipit tortor ut leo pharetra dignissim. Fusce nunc nibh, dictum nec neque in, interdum iaculis quam. Vestibulum finibus, quam quis euismod sollicitudin, dui velit tempus felis, sit amet consequat nunc lacus sit amet ante. Aenean vitae justo interdum quam consequat mollis sed at lectus. Cras auctor a metus eget ultricies. Vestibulum ut mattis quam. Mauris hendrerit facilisis purus, et maximus quam dapibus vel. Sed hendrerit, magna sit amet tempus sagittis, purus velit finibus neque, non aliquet tortor ipsum eu risus. Donec dapibus massa odio, eget rutrum neque euismod eget. Sed vitae dui justo. Pellentesque ac felis dictum, tempor magna in, pulvinar est. Nulla at purus ligula.";
+    $card1 = Card::i();
+    $card1->setAvatar($this->_getAvatar());
+    $card1->setLabel("Label Here");
+    $card1->setTitle("This is a standard card");
+    $card1->setDescription($longDesc);
+    $card1->addProperty("ABC", "DESHDKHF ");
+    $card1->addProperty("ABC", "DESHDKHF ");
+    $card1->addIcon($this->_getArchivedUserIcon());
+    $this->_addRandomActions($card1);
+
+    $card2 = ContentCard::i();
+    $card2->setAvatar($this->_getAvatar());
+    $card2->addIcon($this->_getInsecureIcon());
+    $card2->setLabel("Label Here");
+    $card2->setTitle("This is a content card");
+    $card2->setDescription($longDesc);
+    $card2->addProperty("ABC", "DESHDKHFF ");
+    $card2->addProperty("ABC", "DESHDKHFF ");
+    $card2->setColour('#2B80FF');
+    $this->_addRandomActions($card2);
+
+    return [$card1, LineBreak::create(), $card2];
+  }
+
+  /**
+   * @group Cards
+   */
+  final public function customProperty()
+  {
+    $card1 = Card::i();
+    $card1->setAvatar($this->_getAvatar());
+    $card1->setLabel("Label Here");
+    $card1->setTitle("This is a standard card");
+    $card1->addCustomProperty(
+      Chips::i()->setChips(
+        [
+          Chip::i()->setName("My Chip"),
+          Chip::i()->setName("Second Chip")->setColor('#B20000'),
+          Chip::i()->setName("Third Chip")->setColor('#5A0BB5'),
+        ]
+      )
+    );
+    $card1->addIcon($this->_getArchivedUserIcon());
+    $this->_addRandomActions($card1);
+
+    return $card1;
+  }
+
+  /**
+   * @group Cards
+   */
+  final public function noCards()
+  {
+    $i = 0;
+    $items = [];
+    while(count($items) < 5)
+    {
+      $card = Card::i()->setTitle('Card ' . ++$i);
+      if($i < 4)
+      {
+        $card->addProperty('label', 'value');
+      }
+      $items[] = $card;
+    }
+
+    return $items;
+  }
+
+  /**
+   * @group Cards
+   */
+  final public function listCards()
+  {
+    $i = 0;
+    $items = [];
+    while(count($items) < 5)
+    {
+      $card = Card::i()->setTitle('Card ' . ++$i);
+      if($i < 4)
+      {
+        $card->addProperty('label', 'value');
+      }
+      $items[] = $card;
+    }
+
+    $cards = Cards::i();
+    $cards->addCards($items);
+    return $cards;
+  }
+
+  /**
+   * @group Cards
+   */
+  final public function gridCards()
+  {
+    $i = 0;
+    $items = [];
+    while(count($items) < 5)
+    {
+      $card = Card::i()->setTitle('Card ' . ++$i);
+      if($i < 4)
+      {
+        $card->addProperty('label', 'value');
+      }
+      $items[] = $card;
+    }
+
+    $cards = Cards::i();
+    $cards->setLayout($cards::LAYOUT_GRID);
+    $cards->addCards($items);
     return $cards;
   }
 }

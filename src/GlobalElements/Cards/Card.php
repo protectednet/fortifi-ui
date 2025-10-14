@@ -10,11 +10,10 @@ use Fortifi\Ui\Interfaces\IColours;
 use Fortifi\Ui\Traits\DataAttributesTrait;
 use Fortifi\Ui\Traits\SetIdTrait;
 use Fortifi\Ui\UiElement;
-use Packaged\Dispatch\AssetManager;
+use Packaged\Dispatch\ResourceManager;
 use Packaged\Glimpse\Core\HtmlTag;
 use Packaged\Glimpse\Tags\Div;
 use Packaged\Glimpse\Tags\Link;
-use Packaged\Glimpse\Tags\Span;
 use Packaged\Glimpse\Tags\Text\Paragraph;
 use Packaged\Helpers\Strings;
 
@@ -46,17 +45,17 @@ class Card extends UiElement implements IColours, ICardActionType
   /** @var int */
   protected $_maxDescription = 512;
 
-  /**
-   * Require Assets
-   *
-   * @param AssetManager $assetManager
-   * @param bool         $vendor
-   */
-  public function processIncludes(AssetManager $assetManager, $vendor = false)
+  public function processIncludes(ResourceManager $resourceManager, $vendor = false)
   {
-    if(!$vendor)
+    if($vendor)
     {
-      $assetManager->requireJs('https://use.fontawesome.com/releases/v5.0.13/js/all.js');
+      $resourceManager->requireCss('assets/css/ContentElements.min.css');
+      $resourceManager->requireJs('assets/js/GlobalElements.min.js');
+    }
+    else
+    {
+      $resourceManager->requireCss('assets/css/ContentElements/Cards.css');
+      $resourceManager->requireJs('assets/js/GlobalElements/copy-to-clipboard.js');
     }
   }
 
@@ -161,12 +160,17 @@ class Card extends UiElement implements IColours, ICardActionType
     return $this;
   }
 
+  public function addCustomProperty($property)
+  {
+    $this->_properties[] = Div::create($property)->addClass('property');
+    return $this;
+  }
+
   /**
    * @param string    $type
    * @param Link|null $link
    *
    * @return $this
-   * @throws \Exception
    */
   public function addAction($type = self::ACTION_TYPE_VIEW, Link $link = null)
   {
@@ -182,15 +186,9 @@ class Card extends UiElement implements IColours, ICardActionType
    * @param int        $sortOrder
    *
    * @return $this
-   * @throws \Exception
    */
   public function addCustomAction(CardAction $action, $sortOrder = 50)
   {
-    if(count($this->_actions) >= 3)
-    {
-      throw new \Exception('A card must have no more than 3 actions.');
-    }
-
     if($action instanceof CardAction)
     {
       // Define min/max value of custom sort order.
@@ -211,6 +209,10 @@ class Card extends UiElement implements IColours, ICardActionType
    */
   public function addIcon($icon)
   {
+    if(is_string($icon) && UiIcon::isValid($icon))
+    {
+      $icon = FaIcon::create($icon);
+    }
     $this->_icons[] = $icon;
     return $this;
   }
@@ -261,7 +263,8 @@ class Card extends UiElement implements IColours, ICardActionType
     $sorted = [];
     $sortOrder = [
       self::ACTION_TYPE_VIEW         => 1,
-      self::ACTION_TYPE_EDIT         => 2,
+      self::ACTION_TYPE_DOWNLOAD     => 2,
+      self::ACTION_TYPE_EDIT         => 3,
       // custom actions can appear after here
       self::ACTION_TYPE_IS_DEFAULT   => 100,
       self::ACTION_TYPE_MAKE_DEFAULT => 110,
@@ -269,6 +272,8 @@ class Card extends UiElement implements IColours, ICardActionType
       self::ACTION_TYPE_UNLOCK       => 210,
       self::ACTION_TYPE_PAUSE        => 300,
       self::ACTION_TYPE_RESUME       => 310,
+      self::ACTION_TYPE_COMPLETE     => 320,
+      self::ACTION_TYPE_DROP         => 330,
       // custom actions can appear before here
       self::ACTION_TYPE_ADD          => 400,
       self::ACTION_TYPE_REMOVE       => 410,
@@ -319,28 +324,7 @@ class Card extends UiElement implements IColours, ICardActionType
   {
     if($this->_icons)
     {
-      $icons = Div::create()->addClass('icons');
-      foreach($this->_icons as $icon)
-      {
-        // if is HtmlTag object and $tag is 'i', we can assume that this should be considered an icon
-        if(($icon instanceof FaIcon) || (($icon instanceof HtmlTag) && $icon->getTag() === 'i'))
-        {
-          $icons->appendContent($icon);
-        }
-        // is it a layered icon?
-        else if(($icon instanceof Span) && ($icon->hasClass('fa-layers')))
-        {
-          $icons->appendContent($icon);
-        }
-        else if(is_string($icon) && UiIcon::isValid($icon))
-        {
-          $icons->appendContent(
-            FaIcon::create($icon)
-          );
-        }
-      }
-      $container->appendContent($icons);
-
+      $container->appendContent(Div::create($this->_icons)->addClass('icons'));
       $card->addClass('has-icons');
     }
 
@@ -357,14 +341,15 @@ class Card extends UiElement implements IColours, ICardActionType
 
     // Avatar, Label, Title and Description
     $primary = Div::create()->addClass('primary');
+    $card->appendContent($primary);
 
-    // Title, Label, Description content
-    $text = Div::create()->addClass('text');
-
+    $heading = Div::create()->addClass('ui-c-head');
+    $primary->appendContent($heading);
+    //Avatar
     if($this->_avatar)
     {
       $avatar = Div::create($this->_avatar)->addClass('avatar');
-      $primary->appendContent($avatar);
+      $heading->appendContent($avatar);
 
       $card->addClass('has-avatar');
     }
@@ -372,6 +357,10 @@ class Card extends UiElement implements IColours, ICardActionType
     {
       $card->addClass('no-avatar');
     }
+
+    // Title, Label, Description content
+    $text = Div::create()->addClass('text');
+    $heading->appendContent($text);
 
     // add icons to Card
     $this->_applyIcons($text, $card);
@@ -396,12 +385,10 @@ class Card extends UiElement implements IColours, ICardActionType
       $card->addClass('has-title');
     }
 
-    if($this->_description)
+    if($this->_description !== null && $this->_description !== '')
     {
-      $description = Div::create(
-        $this->_produceDescription()
-      )->addClass('description');
-      $text->appendContent($description);
+      $description = Div::create($this->_produceDescription())->addClass('description');
+      $this->_setDescription($description, $primary, $heading, $text);
 
       $card->addClass('has-description');
     }
@@ -410,14 +397,14 @@ class Card extends UiElement implements IColours, ICardActionType
       $card->addClass('no-description');
     }
 
-    // Add Label, Title, Description and Icons.
-    $primary->appendContent($text);
-    $card->appendContent($primary);
-
     // add border colour class
     if(Colour::isValid($this->_colour))
     {
       $card->addClass($this->_colour);
+    }
+    else
+    {
+      $card->setAttribute('style', '--card-color: ' . $this->_colour . ';');
     }
 
     // append properties
@@ -453,6 +440,12 @@ class Card extends UiElement implements IColours, ICardActionType
     $this->_applyId($card);
 
     return $card;
+  }
+
+  protected function _setDescription(HtmlTag $description, HtmlTag $primary, HtmlTag $heading, HtmlTag $text)
+  {
+    $text->appendContent($description);
+    return $this;
   }
 
   /**

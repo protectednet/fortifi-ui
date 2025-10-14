@@ -1,0 +1,66 @@
+.f-statistics-panel .panel-body {
+  padding: 0;
+  display: flex;
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+
+.f-statistic {
+  border: 1px solid #e8e8e8;
+  border-top: 0;
+  border-left: 0;
+  margin: 0 -1px -1px 0 !important;
+  padding: 10px;
+  display: flex;
+  flex-grow: 1;
+  flex-basis: 170px;
+  height: 70px;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.f-statistic:hover {
+  text-decoration: none;
+}
+
+.f-statistic-value {
+  font-size: 22px;
+}
+
+.f-statistic-title {
+  opacity: .75;
+}
+
+.f-statistic-icon {
+  margin-right: 10px;
+  border: 2px solid rgba(24, 28, 33, 0.06);
+  border-radius: 50%;
+  width: 48px;
+  min-width: 48px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.f-statistic-append {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.f-statistic-append > div {
+  width: 100%;
+  font-size: 14px;
+}
+
+.f-statistics-panel.with-bg .f-statistic {
+  color: #FFFFFF;
+}
+
+.f-statistics-panel.with-bg .f-statistic-icon {
+  background: #FFFFFF;
+}
