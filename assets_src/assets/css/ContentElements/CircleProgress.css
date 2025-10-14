@@ -1,0 +1,54 @@
+.f-cprogress {
+  --bar-color: #307bbb;
+  --circle-size: 50px;
+
+  font-size: var(--circle-size);
+  width: var(--circle-size);
+  height: var(--circle-size);
+}
+
+.f-cprogress .c {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  font-size: 10px;
+}
+
+.f-cprogress .r, .f-cprogress .l {
+  position: absolute;
+  border: 2px solid var(--bar-color);
+  top: 0;
+  left: 0;
+  width: 1em;
+  height: 1em;
+  clip: rect(0em, 0.5em, 1em, 0em);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.f-cprogress .r {
+  transform: rotate(180deg);
+}
+
+.f-cprogress .l {
+  display: none;
+  transform: rotate(-180deg);
+}
+
+.f-cprogress .clip.hit50 .l {
+  display: block;
+}
+
+.f-cprogress .clip {
+  position: absolute;
+  width: 1em;
+  height: 1em;
+  clip: rect(0, 1em, 1em, 0.5em);
+}
+
+.f-cprogress .clip.hit50 {
+  clip: rect(auto, auto, auto, auto);
+}

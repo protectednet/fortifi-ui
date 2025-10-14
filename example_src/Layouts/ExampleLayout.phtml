@@ -1,0 +1,44 @@
+<?php
+/**
+ * @var $this ExampleLayout
+ */
+
+use Fortifi\UiExample\Layouts\ExampleLayout;
+use Packaged\Dispatch\Dispatch;
+
+$r = Dispatch::instance()->store();
+?>
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"><![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"><![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="fragment" content="!">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <?= $r->generateHtmlIncludes($r::TYPE_CSS); ?>
+</head>
+<body>
+<div id="title-bar">
+  <h1>Fortifi UI</h1>
+  <ul class="title-bar-nav">
+    <?php foreach($this->views as $uri => $obj) { ?>
+      <li><a href="/<?= $uri; ?>"><?= $obj->getDisplayName(); ?></a></li>
+    <?php } ?>
+  </ul>
+</div>
+
+<div id="wrapper">
+  <?= $this->content; ?>
+</div>
+<?= $r->generateHtmlIncludes($r::TYPE_JS); ?>
+</body>
+</html>

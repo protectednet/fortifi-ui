@@ -1,7 +1,8 @@
 <?php
 namespace Fortifi\Ui\GlobalElements\Cards;
 
-use Packaged\Glimpse\Elements\LineBreak;
+use Packaged\Glimpse\Core\HtmlTag;
+use Packaged\Glimpse\Tags\LineBreak;
 
 class ContentCard extends Card
 {
@@ -20,6 +21,12 @@ class ContentCard extends Card
       return $return;
     }
     return $this->getDescription();
+  }
+
+  protected function _setDescription(HtmlTag $description, HtmlTag $primary, HtmlTag $heading, HtmlTag $text)
+  {
+    $primary->appendContent($description);
+    return $this;
   }
 
   protected function _produceHtml()

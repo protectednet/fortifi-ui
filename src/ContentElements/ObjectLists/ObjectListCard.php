@@ -5,13 +5,13 @@ use Fortifi\Ui\GlobalElements\Icons\Icon;
 use Fortifi\Ui\Traits\DataAttributesTrait;
 use Fortifi\Ui\Traits\SetIdTrait;
 use Fortifi\Ui\UiElement;
-use Packaged\Dispatch\AssetManager;
-use Packaged\Glimpse\Core\SafeHtml;
+use Packaged\Dispatch\ResourceManager;
 use Packaged\Glimpse\Tags\Div;
 use Packaged\Glimpse\Tags\Link;
 use Packaged\Glimpse\Tags\Lists\ListItem;
 use Packaged\Glimpse\Tags\Lists\UnorderedList;
 use Packaged\Glimpse\Tags\Span;
+use Packaged\SafeHtml\SafeHtml;
 
 class ObjectListCard extends UiElement
 {
@@ -45,15 +45,15 @@ class ObjectListCard extends UiElement
   protected $_actionCount = 0;
   protected $_midColumns = [];
 
-  public function processIncludes(AssetManager $assetManager, $vendor = false)
+  public function processIncludes(ResourceManager $resourceManager, $vendor = false)
   {
     if($vendor)
     {
-      $assetManager->requireCss('assets/css/ContentElements');
+      $resourceManager->requireCss('assets/css/ContentElements.min.css');
     }
     else
     {
-      $assetManager->requireCss('assets/css/ContentElements/ObjectLists');
+      $resourceManager->requireCss('assets/css/ContentElements/ObjectLists.css');
     }
   }
 

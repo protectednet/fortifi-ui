@@ -1,0 +1,91 @@
+:root {
+  --chip-color: #ececec;
+  --chip-border-color: rgba(0, 0, 0, 0.1);
+}
+
+.f-chip {
+  display: inline-block;
+  background: var(--chip-color);
+  padding: 0 10px;
+  line-height: 28px;
+  border-radius: 28px;
+  border: 1px solid var(--chip-border-color);
+  white-space: nowrap;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+.f-chip.f-chip-dt, .f-chip.f-chip-dt a {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.f-chip.f-chip-lt, .f-chip.f-chip-lt a {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.f-chip .name {
+  font-weight: 500;
+}
+
+.f-chip .value {
+  font-weight: 400;
+}
+
+.f-chip .value::before {
+  content: ':';
+  position: relative;
+  width: 8px;
+  display: inline-block;
+  text-align: center;
+}
+
+.f-chip .f-chip-icon {
+  margin-right: 5px;
+}
+
+.f-chip .f-chip-action {
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.1);
+  border: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  padding: 0;
+  margin: 0 -4px 0 5px;
+  cursor: pointer;
+  font: inherit;
+  line-height: 20px;
+  text-align: center;
+}
+
+.f-chip .f-chip-action:hover {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.f-chip.f-chip-lt .f-chip-action{
+  background: rgba(255,255,255, 0.15);
+}
+
+.f-chip.f-chip-lt .f-chip-action:hover{
+  background: rgba(255,255,255, 0.25);
+}
+
+.f-chip a {
+  opacity: 0.8;
+}
+
+.f-chip a:hover {
+  opacity: 1;
+}
+
+.f-chips {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -5px;
+  margin-top: -5px;
+}
+
+.f-chips > .f-chip {
+  margin-right: 5px;
+  margin-top: 5px;
+}

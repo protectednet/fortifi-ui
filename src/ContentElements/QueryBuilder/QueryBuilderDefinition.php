@@ -3,33 +3,48 @@ namespace Fortifi\Ui\ContentElements\QueryBuilder;
 
 class QueryBuilderDefinition
 {
-  const COMPARATOR_EQUALS = 'eq';
-  const COMPARATOR_NOT_EQUALS = 'neq';
-  const COMPARATOR_EQUALS_INSENSITIVE = 'eqi';
+  const COMPARATOR_EQUALS                 = 'eq';
+  const COMPARATOR_NOT_EQUALS             = 'neq';
+  const COMPARATOR_EQUALS_INSENSITIVE     = 'eqi';
   const COMPARATOR_NOT_EQUALS_INSENSITIVE = 'neqi';
-  const COMPARATOR_IN = 'in';
-  const COMPARATOR_NOT_IN = 'nin';
-  const COMPARATOR_GREATER_THAN = 'gt';
-  const COMPARATOR_GREATER_OR_EQUAL = 'gte';
-  const COMPARATOR_LESS_THAN = 'lt';
-  const COMPARATOR_LESS_OR_EQUAL = 'lte';
-  const COMPARATOR_BETWEEN = 'bet';
-  const COMPARATOR_NOT_BETWEEN = 'nbet';
-  const COMPARATOR_LIKE = 'like';
-  const COMPARATOR_NOT_LIKE = 'nlike';
-  const COMPARATOR_LIKE_IN = 'likein';
-  const COMPARATOR_NOT_LIKE_IN = 'nlikein';
-  const COMPARATOR_STARTS = 'starts';
-  const COMPARATOR_NOT_STARTS = 'nstarts';
-  const COMPARATOR_ENDS = 'ends';
-  const COMPARATOR_NOT_ENDS = 'nends';
-  const COMPARATOR_BEFORE = 'before';
-  const COMPARATOR_AFTER = 'after';
+  const COMPARATOR_IN                     = 'in';
+  const COMPARATOR_NOT_IN                 = 'nin';
+  const COMPARATOR_CONTAINS               = 'contains';
+  const COMPARATOR_DOES_NOT_CONTAIN       = 'dncontain';
+  const COMPARATOR_GREATER_THAN           = 'gt';
+  const COMPARATOR_GREATER_OR_EQUAL       = 'gte';
+  const COMPARATOR_LESS_THAN              = 'lt';
+  const COMPARATOR_LESS_OR_EQUAL          = 'lte';
+  const COMPARATOR_BETWEEN                = 'bet';
+  const COMPARATOR_NOT_BETWEEN            = 'nbet';
+  const COMPARATOR_LIKE                   = 'like';
+  const COMPARATOR_NOT_LIKE               = 'nlike';
+  const COMPARATOR_LIKE_IN                = 'likein';
+  const COMPARATOR_NOT_LIKE_IN            = 'nlikein';
+  const COMPARATOR_STARTS                 = 'starts';
+  const COMPARATOR_NOT_STARTS             = 'nstarts';
+  const COMPARATOR_ENDS                   = 'ends';
+  const COMPARATOR_NOT_ENDS               = 'nends';
+  const COMPARATOR_BEFORE                 = 'before';
+  const COMPARATOR_AFTER                  = 'after';
+
+  //elastic specific search comparators
+  const COMPARATOR_MATCH                   = 'match';
+  const COMPARATOR_NOT_MATCH               = 'nmatch';
+  const COMPARATOR_MATCH_PHRASE            = 'matchphrase';
+  const COMPARATOR_NOT_MATCH_PHRASE        = 'nmatchphrase';
+  const COMPARATOR_MATCH_PHRASE_PREFIX     = 'matchphrasepre';
+  const COMPARATOR_NOT_MATCH_PHRASE_PREFIX = 'nmatchphrasepre';
+  const COMPARATOR_WILDCARD                = 'wild';
+  const COMPARATOR_NOT_WILDCARD            = 'nwild';
+  const COMPARATOR_FUZZY                   = 'fuzzy';
+  const COMPARATOR_NOT_FUZZY               = 'nfuzzy';
 
   protected $_key = '';
   protected $_displayName = '';
   protected $_dataType = QueryBuilderDataType::STRING;
   protected $_inputType = null;
+  protected $_showSingleComparator = null;
   protected $_comparators = [self::COMPARATOR_EQUALS];
   protected $_required = false;
   protected $_unique = false;
@@ -44,13 +59,20 @@ class QueryBuilderDefinition
     $this->_dataType = $dataType;
   }
 
-  public function setComparators(array $comparators)
+  public function showSingleComparator($showSingleComparator = null)
+  {
+    $this->_showSingleComparator = $showSingleComparator;
+    return $this;
+  }
+
+  public function setComparators(array $comparators, $showSingleComparator = null)
   {
     $this->_comparators = [];
     foreach($comparators as $comparator)
     {
       $this->addComparator($comparator);
     }
+    $this->_showSingleComparator = $showSingleComparator;
     return $this;
   }
 
@@ -104,13 +126,17 @@ class QueryBuilderDefinition
     return $this;
   }
 
+  // Values get converted to an object to stop [0=>'Zero', 1=>'One'] in PHP becoming ['Zero', 'One'] in JSON
   public function setValues(array $values)
   {
     if(empty($values))
     {
-      $values = null;
+      $this->_values = null;
     }
-    $this->_values = $values;
+    else
+    {
+      $this->_values = (object)$values;
+    }
     return $this;
   }
 
@@ -129,16 +155,17 @@ class QueryBuilderDefinition
   public function toArray()
   {
     return [
-      'key'          => $this->_key,
-      'displayName'  => $this->_displayName,
-      'comparators'  => array_values($this->_comparators),
-      'dataType'     => $this->_dataType,
-      'inputType'    => $this->_inputType,
-      'required'     => $this->_required,
-      'unique'       => $this->_unique,
-      'values'       => $this->_values,
-      'valuesUrl'    => $this->_valuesUrl,
-      'strictValues' => $this->_strictValues,
+      'key'                  => $this->_key,
+      'displayName'          => $this->_displayName,
+      'comparators'          => array_values($this->_comparators),
+      'showSingleComparator' => $this->_showSingleComparator,
+      'dataType'             => $this->_dataType,
+      'inputType'            => $this->_inputType,
+      'required'             => $this->_required,
+      'unique'               => $this->_unique,
+      'values'               => $this->_values,
+      'valuesUrl'            => $this->_valuesUrl,
+      'strictValues'         => $this->_strictValues,
     ];
   }
 
@@ -165,6 +192,36 @@ class QueryBuilderDefinition
   {
     return [
       QueryBuilderDefinition::COMPARATOR_EQUALS,
+    ];
+  }
+
+  public static function containsComparators()
+  {
+    return [
+      QueryBuilderDefinition::COMPARATOR_CONTAINS,
+      QueryBuilderDefinition::COMPARATOR_DOES_NOT_CONTAIN,
+    ];
+  }
+
+  public static function idComparators()
+  {
+    return [
+      QueryBuilderDefinition::COMPARATOR_EQUALS,
+      QueryBuilderDefinition::COMPARATOR_NOT_EQUALS,
+      QueryBuilderDefinition::COMPARATOR_STARTS,
+      QueryBuilderDefinition::COMPARATOR_NOT_STARTS,
+    ];
+  }
+
+  public static function emailComparators()
+  {
+    return [
+      QueryBuilderDefinition::COMPARATOR_EQUALS,
+      QueryBuilderDefinition::COMPARATOR_NOT_EQUALS,
+      QueryBuilderDefinition::COMPARATOR_STARTS,
+      QueryBuilderDefinition::COMPARATOR_NOT_STARTS,
+      QueryBuilderDefinition::COMPARATOR_WILDCARD,
+      QueryBuilderDefinition::COMPARATOR_NOT_WILDCARD,
     ];
   }
 

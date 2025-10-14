@@ -2,7 +2,7 @@
 namespace Fortifi\Ui\GlobalElements\Panels;
 
 use Fortifi\Ui\UiElement;
-use Packaged\Dispatch\AssetManager;
+use Packaged\Dispatch\ResourceManager;
 use Packaged\Glimpse\Tags\Div;
 
 class Panel extends UiElement
@@ -38,18 +38,18 @@ class Panel extends UiElement
   /**
    * Require Assets
    *
-   * @param AssetManager $assetManager
-   * @param bool         $vendor
+   * @param ResourceManager $resourceManager
+   * @param bool            $vendor
    */
-  public function processIncludes(AssetManager $assetManager, $vendor = false)
+  public function processIncludes(ResourceManager $resourceManager, $vendor = false)
   {
     if($vendor)
     {
-      $assetManager->requireCss('assets/css/GlobalElements');
+      $resourceManager->requireCss('assets/css/GlobalElements.css');
     }
     else
     {
-      $assetManager->requireCss('assets/css/GlobalElements/Panels');
+      $resourceManager->requireCss('assets/css/GlobalElements/Panels.css');
     }
   }
 
@@ -66,7 +66,11 @@ class Panel extends UiElement
 
   public function setContent($content)
   {
-    $this->_content = (array)$content;
+    if(!is_array($content))
+    {
+      $content = [$content];
+    }
+    $this->_content = $content;
     return $this;
   }
 
@@ -88,7 +92,6 @@ class Panel extends UiElement
    * @param $content
    *
    * @return $this
-   * @throws \Exception
    */
   public function setHeader($content)
   {
