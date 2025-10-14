@@ -45,7 +45,7 @@ class Panel extends UiElement
   {
     if($vendor)
     {
-      $resourceManager->requireCss('assets/css/GlobalElements.css');
+      $resourceManager->requireCss('assets/css/GlobalElements.min.css');
     }
     else
     {
