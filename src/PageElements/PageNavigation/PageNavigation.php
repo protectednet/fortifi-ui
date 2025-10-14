@@ -93,7 +93,7 @@ class PageNavigation extends UiElement
     /** @var Div $header */
     if(!empty($this->getTitle()))
     {
-      $menu->prependContent(Div::create($this->getTitle())->addClass('f-page-navigation-title'));
+      $menu->prependContent(Div::create($this->getTitle())->addClass('f-page-navigation-title panel-heading clearfix'));
     }
     return $menu;
   }
