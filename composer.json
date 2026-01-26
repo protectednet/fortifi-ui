@@ -14,7 +14,7 @@
     "packaged/dispatch": "^2.0",
     "packaged/glimpse": "^2.0",
     "nesbot/carbon": "^3.11.0",
-    "illuminate/contracts": "^v12.48.1",
+    "illuminate/contracts": "^v8.83.27",
     "fortifi/fontawesome": "^3.0"
   },
   "require-dev": {
