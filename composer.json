@@ -13,7 +13,7 @@
   "require": {
     "packaged/dispatch": "^2.0",
     "packaged/glimpse": "^2.0",
-    "2.73.0": "^2.73.0",
+    "nesbot/carbon": "^2.73.0",
     "illuminate/contracts": "^v8.83.27",
     "fortifi/fontawesome": "^3.0"
   },
