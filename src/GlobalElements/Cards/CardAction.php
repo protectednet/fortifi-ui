@@ -26,7 +26,7 @@ class CardAction extends UiElement implements ICardActionType
    *
    * @return static
    */
-  public static function create($type = self::ACTION_TYPE_VIEW, Link $link = null)
+  public static function create($type = self::ACTION_TYPE_VIEW, ?Link $link = null)
   {
     $self = new static();
     $self->setType($type);
@@ -196,7 +196,7 @@ class CardAction extends UiElement implements ICardActionType
    *
    * @return CardAction
    */
-  public function setLink(Link $link = null)
+  public function setLink(?Link $link = null)
   {
     $this->_link = $link;
     return $this;

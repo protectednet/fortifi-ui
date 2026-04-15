@@ -18,7 +18,7 @@ class Statistic extends UiElement
   protected $_link;
   protected $_append;
 
-  public static function create($title, $value, FaIcon $icon = null)
+  public static function create($title, $value, ?FaIcon $icon = null)
   {
     $stat = static::i();
     $stat->_title = $title;
